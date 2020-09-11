@@ -85,6 +85,25 @@ pm2 startup
 pm2 save
 ```
 
+## Updating the data model
+You need to run Strapi in `develop` mode to actually update any content using the admin front-end. 
+
+1. Pause the `pm2` production process:
+```
+pm2 stop 0
+```
+
+2. Run Strapi in development:
+```
+cd ardislu-cms
+sudo npm run develop
+```
+
+3. After finishing content updates, restart the production process:
+```
+pm2 start 0
+```
+
 ## Rebuilding the CMS
 
 The f1-micro instance does not have enough provisioned RAM to build Strapi locally. Instead, build it remotely (e.g. on your own development computer), then push the build files to GitHub. Then pull the compiled files on the virtual machine and restart the server.
