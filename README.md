@@ -17,24 +17,29 @@ I'm hosting this on a free [Google Compute Engine](https://cloud.google.com/comp
 
 2. Go to the [GCP Console](https://console.cloud.google.com/) to SSH into the instance.
 
-3. Install Node.js with npm:
+3. Install [nvm](https://github.com/nvm-sh/nvm) (see GitHub repo to get the URL for the latest version of `nvm`):
 ```
-cd ~
-curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-...
-sudo apt-get install nodejs
-...
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
+```
+
+4. Use `nvm` to install the latest version of `node`:
+```
+nvm install node
+```
+
+5. Confirm successful installation:
+```
 node -v && npm -v
 ```
 
-4. Create and change npm's default directory:
+6. Create and change npm's default directory:
 ```
 cd ~
 mkdir ~/.npm-global
 npm config set prefix '~/.npm-global'
 ```
 
-5. Create (or modify) a ~/.profile file and add this line:
+7. Create (or modify) a ~/.profile file and add this line:
 ```
 sudo vim ~/.profile
 ```
@@ -44,12 +49,12 @@ Add these lines to the bottom of ~/.profile:
 export PATH=~/.npm-global/bin:$PATH
 ```
 
-6. Update system variables:
+8. Update system variables:
 ```
 source ~/.profile
 ```
 
-7. Install global node packages:
+9. Install global node packages:
 ```
 npm i -g yarn
 npm i -g strapi
@@ -107,3 +112,44 @@ pm2 start 0
 ## Rebuilding the CMS
 
 The f1-micro instance does not have enough provisioned RAM to build Strapi locally. Instead, build it remotely (e.g. on your own development computer), then push the build files to GitHub. Then pull the compiled files on the virtual machine and restart the server.
+
+### On the development computer:
+
+1. Use `npm-check-updates` to check (and update) `package.json` dependencies to latest versions:
+```
+npx ncu
+```
+
+2. Install updated dependencies:
+```
+yarn install
+```
+
+3. Rebuild the CMS:
+```
+yarn build
+```
+
+4. Commit and push changes (including the `build` folder!)
+
+### On the virtual machine:
+
+1. Pause the `pm2` process:
+```
+pm2 stop 0
+```
+
+2. Pull latest changes and the latest build:
+```
+git pull
+```
+
+3. Update dependencies per updated `package.json`:
+```
+yarn install
+```
+
+4. Restart the pm2 process with the updated files:
+```
+pm2 start 0
+```
