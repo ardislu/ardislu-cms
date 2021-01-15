@@ -4,27 +4,34 @@ This repo contains the code for the Content Management System (CMS) for my perso
 
 ## Quick Overview
 
-Strapi will spin up a SQLite database, RESTful API surface to read/write to the database, and an admin front-end for non-developers to manage content. All written in node.js, in this directory.
+Strapi will spin up a SQLite database, RESTful API surface to read/write to the database, and an admin front-end for non-developers to manage content. Strapi is written with node.js.
 
 ## Initial Setup
 
 I'm hosting this on a free [Google Compute Engine](https://cloud.google.com/compute) f1-micro instance. Before getting to the Strapi server, we need to configure the virtual machine. 
 
 1. Create a Compute Engine f1-micro instance. 
-- Select `Ubuntu 18.04 LTS` as the OS.
+- Select `Ubuntu 18.04 LTS` (or the latest LTS) as the OS. 
 - Check `Allow HTTP traffic` and `Allow HTTPS traffic`.
 - In `Network interfaces`, get a static external IP (i.e., not ephemeral).
 
 2. Go to the [GCP Console](https://console.cloud.google.com/) to SSH into the instance.
 
-3. Install [nvm](https://github.com/nvm-sh/nvm) (see GitHub repo to get the URL for the latest version of `nvm`):
+3. Install [nvm](https://github.com/nvm-sh/nvm) (see the linked GitHub repo to get the URL for the latest version of `nvm`):
 ```
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
 ```
 
-4. Use `nvm` to install the latest version of `node`:
+4. Use `nvm` to install and use the latest version of `node` (change `14.15.4` to the latest version):
 ```
-nvm install node
+nvm ls-remote # Show all node versions
+nvm install 14.15.4 # Install the latest version
+nvm use 14.15.4 # Configure PATH to this installation of node
+nvm alias default 14.15.4 # Automatically do 'nvm use 14.15.4' on future sessions 
+```
+(Optional) You can update `npm` independently of `node`:
+```
+nvm install-latest-npm
 ```
 
 5. Confirm successful installation:
@@ -32,33 +39,9 @@ nvm install node
 node -v && npm -v
 ```
 
-6. Create and change npm's default directory:
+6. Install global node packages:
 ```
-cd ~
-mkdir ~/.npm-global
-npm config set prefix '~/.npm-global'
-```
-
-7. Create (or modify) a ~/.profile file and add this line:
-```
-sudo vim ~/.profile
-```
-Add these lines to the bottom of ~/.profile:
-```
-# set PATH so global node modules install without permission issues
-export PATH=~/.npm-global/bin:$PATH
-```
-
-8. Update system variables:
-```
-source ~/.profile
-```
-
-9. Install global node packages:
-```
-npm i -g yarn
-npm i -g strapi
-npm i -g pm2
+npm i -g yarn strapi pm2
 ```
 
 ## Deployment
@@ -80,14 +63,21 @@ yarn install
 
 3. Use [pm2](https://pm2.keymetrics.io/) to initially daemonize the Strapi server and run it in the background:
 ```
-sudo env PATH=$PATH NODE_ENV=production pm2 start npm --name "ardislu-cms" -- run start
+sudo env PATH=$PATH NODE_ENV=production pm2 start npm --name "ardislu-cms" -- start
 ```
+
+Command explanation:
+- `sudo`: run the following command as superuser (required to expose the web server to the internet)
+- `env`: set the following environment variables
+- `PATH=$PATH`: set the superuser PATH to the same as the user's PATH - required to use `pm2` and `npm` (by default, the `sudo` command uses a separately-configured PATH)
+- `NODE_ENV=production`: tell `strapi` to use production settings
+- `pm2 start npm --name "ardislu-cms"`: initialize the `pm2` process with the `npm` command and the name "ardislu-cms"
+- `-- start`: pass `start` to the `npm` command to run the npm script specified in `package.json` (the space after `--` is required to pass it "down" to `npm` instead of to `pm2`)
 
 4. Configure pm2 to restart the process on startup:
 ```
-cd ~
-pm2 startup
-pm2 save
+sudo env PATH=$PATH pm2 startup
+sudo env PATH=$PATH pm2 save
 ```
 
 ## Updating the data model
@@ -95,18 +85,18 @@ You need to run Strapi in `develop` mode to actually update any content using th
 
 1. Pause the `pm2` production process:
 ```
-pm2 stop 0
+sudo env PATH=$PATH pm2 stop 0
 ```
 
 2. Run Strapi in development:
 ```
 cd ardislu-cms
-sudo npm run develop
+sudo env PATH=$PATH npm run develop
 ```
 
 3. After finishing content updates, restart the production process:
 ```
-pm2 start 0
+sudo env PATH=$PATH pm2 start 0
 ```
 
 ## Rebuilding the CMS
@@ -136,7 +126,7 @@ yarn build
 
 1. Pause the `pm2` process:
 ```
-pm2 stop 0
+sudo env PATH=$PATH pm2 stop 0
 ```
 
 2. Pull latest changes and the latest build:
@@ -151,5 +141,11 @@ yarn install
 
 4. Restart the pm2 process with the updated files:
 ```
-pm2 start 0
+sudo env PATH=$PATH pm2 start 0
+```
+
+## Kill the pm2 process
+You can force kill the `pm2` process with this command (useful when using different versions of `node` with multiple global `pm2` installations):
+```
+sudo pkill -f PM2
 ```
