@@ -11,7 +11,7 @@ Strapi will spin up a SQLite database, RESTful API surface to read/write to the 
 I'm hosting this on a free [Google Compute Engine](https://cloud.google.com/compute) f1-micro instance. Before getting to the Strapi server, we need to configure the virtual machine. 
 
 1. Create a Compute Engine f1-micro instance. 
-- Select `Ubuntu 18.04 LTS` (or the latest LTS) as the OS. 
+- Select `Ubuntu 20.04 LTS` (or the latest LTS) as the OS. 
 - Check `Allow HTTP traffic` and `Allow HTTPS traffic`.
 - In `Network interfaces`, get a static external IP (i.e., not ephemeral).
 
@@ -19,15 +19,15 @@ I'm hosting this on a free [Google Compute Engine](https://cloud.google.com/comp
 
 3. Install [nvm](https://github.com/nvm-sh/nvm) (see the linked GitHub repo to get the URL for the latest version of `nvm`):
 ```
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
 ```
 
-4. Use `nvm` to install and use the latest version of `node` (change `14.15.4` to the latest version):
+4. Use `nvm` to install and use the latest version of `node` (change `14.16.1` to the latest version):
 ```
 nvm ls-remote # Show all node versions
-nvm install 14.15.4 # Install the latest version
-nvm use 14.15.4 # Configure PATH to this installation of node
-nvm alias default 14.15.4 # Automatically do 'nvm use 14.15.4' on future sessions 
+nvm install 14.16.1 # Install the latest version
+nvm use 14.16.1 # Configure PATH to this installation of node
+nvm alias default 14.16.1 # Automatically do 'nvm use 14.16.1' on future sessions 
 ```
 (Optional) You can update `npm` independently of `node`:
 ```
