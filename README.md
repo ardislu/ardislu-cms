@@ -63,16 +63,16 @@ yarn install
 
 3. Use [pm2](https://pm2.keymetrics.io/) to initially daemonize the Strapi server and run it in the background:
 ```
-sudo env PATH=$PATH NODE_ENV=production pm2 start npm --name "ardislu-cms" -- start
+sudo env PATH=$PATH NODE_ENV=production pm2 start strapi --name "ardislu-cms" -- start
 ```
 
 Command explanation:
 - `sudo`: run the following command as superuser (required to expose the web server to the internet)
 - `env`: set the following environment variables
-- `PATH=$PATH`: set the superuser PATH to the same as the user's PATH - required to use `pm2` and `npm` (by default, the `sudo` command uses a separately-configured PATH)
+- `PATH=$PATH`: set the superuser PATH to the same as the user's PATH - required to use `pm2` and `strapi` (by default, the `sudo` command uses a separately-configured PATH)
 - `NODE_ENV=production`: tell `strapi` to use production settings
-- `pm2 start npm --name "ardislu-cms"`: initialize the `pm2` process with the `npm` command and the name "ardislu-cms"
-- `-- start`: pass `start` to the `npm` command to run the npm script specified in `package.json` (the space after `--` is required to pass it "down" to `npm` instead of to `pm2`)
+- `pm2 start strapi --name "ardislu-cms"`: initialize the `pm2` process with the `strapi` command and the name "ardislu-cms"
+- `-- start`: pass `start` to the `strapi` command (the space after `--` is required to pass it "down" to `strapi` instead of to `pm2`)
 
 4. Configure pm2 to restart the process on startup:
 ```
@@ -91,7 +91,7 @@ sudo env PATH=$PATH pm2 stop 0
 2. Run Strapi in development:
 ```
 cd ardislu-cms
-sudo env PATH=$PATH npm run develop
+sudo env PATH=$PATH strapi develop
 ```
 
 3. After finishing content updates, restart the production process:
