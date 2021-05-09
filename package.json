@@ -2,7 +2,7 @@
   "name": "ardislu-cms",
   "private": true,
   "version": "0.1.0",
-  "description": "A Strapi application",
+  "description": "CMS for ardis.lu. Visit at https://cms.ardis.lu.",
   "scripts": {
     "develop": "strapi develop",
     "start": "strapi start",
@@ -24,7 +24,7 @@
     "sqlite3": "latest"
   },
   "author": {
-    "name": "A Strapi developer"
+    "name": "Ardis Lu"
   },
   "strapi": {
     "uuid": "0dbf6f0e-643f-4ca1-9ad4-84005e9d377f"
@@ -33,5 +33,5 @@
     "node": ">=10.0.0",
     "npm": ">=6.0.0"
   },
-  "license": "MIT"
+  "license": "ISC"
 }
